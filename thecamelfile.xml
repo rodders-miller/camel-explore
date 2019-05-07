@@ -42,6 +42,9 @@
 
     <route>
       <from uri="timer:fetch?period=7600s&amp;delay=10s" />
+      <choice>
+         <to uri="direct:trigger1" />
+      </choice>
       <to uri="direct:trigger2" />
     </route>
 
