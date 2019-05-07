@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://cxf.apache.org/blueprint/jaxws http://cxf.apache.org/schemas/blueprint/jaxws.xsd
+            http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd
+           ">
+
+  <bean id="weatherProcessor" class="com.stackabuse.example.WeatherProcessor" />
+
+  <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="theContext">
+
+    <route>
+      <from uri="timer:fetch?period=3600s&amp;delay=5s" />
+      <to uri="direct:trigger" />
+    </route>
+
+
+
+    <route>
+      <from uri="direct:trigger" />
+      <to uri="weather:foo?location=Omaha,United States&amp;period=7 days&amp;units=IMPERIAL" />
+      <process ref="weatherProcessor" />
+      <to uri="log:com.stackabuse.example?level=DEBUG" />
+      <to uri="file:/Users/scott/Desktop/weather?fileName=omaha.txt" />
+    </route>
+
+    <route>
+      <from uri="timer:fetch?period=7600s&amp;delay=10s" />
+      <to uri="direct:trigger" />
+    </route>
+
+
+    <route>
+      <from uri="direct:trigger2" />
+      <to uri="weather:foo?location=Omaha,United States&amp;period=7 days&amp;units=IMPERIAL" />
+      <process ref="weatherProcessor" />
+      <to uri="direct:trigger" />
+      <to uri="file:/Users/scott/Desktop/weather?fileName=omaha.txt" />
+    </route>
+
+    <route>
+      <from uri="timer:fetch?period=7600s&amp;delay=10s" />
+      <to uri="direct:trigger2" />
+    </route>
+
+
+  </camelContext>
+
+</blueprint>
