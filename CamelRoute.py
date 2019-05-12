@@ -33,7 +33,7 @@ class CamelRoute:
 
     def link_direct_routes(self):
         for to_node in self.to:
-            if to_node.is_direct():
+            if to_node.is_direct() and to_node.get_direct_target() in self.direct_dic:
                 to_node.target = self.direct_dic[to_node.get_direct_target()]
 
     def __str__(self):
